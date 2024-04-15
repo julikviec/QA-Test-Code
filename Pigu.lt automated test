@@ -1,0 +1,97 @@
+package org.example;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
+
+import java.time.Duration;
+import java.util.List;
+
+import static java.lang.Integer.parseInt;
+
+
+public class Main {
+    public static WebDriver driver;
+    public static WebDriverWait wait;
+
+
+    public static int totalCount;
+
+    public static void main(String[] args) {
+    setup();
+    cookies();
+
+        timeout(1000);
+    int count = 0;
+    for (int i = 1; i <=3; i++){
+        int[] rezultatas = pirmasTestas(i);
+//        count += rezultatas[0];
+        count += rezultatas[1];
+    }
+    System.out.println("Kategorijoje skelbimų yra: " + count);
+
+    if (totalCount == count){
+        System.out.println("Kategorijoje deklaruojamas ir esantis produktų kiekis yra vienodas");
+    }
+    driver.close();
+    }
+
+    public static int[] pirmasTestas(int page) {
+        driver.get("https://pigu.lt/lt/kudikiams-ir-vaikams/zaislai/konstruktoriai-ir-kaladeles/f/all/duplo?page=" + page);
+
+        if (page == 1) {
+        String productCounter = driver.findElement(By.cssSelector(".product-counter")).getText();
+
+        totalCount = parseInt (
+                productCounter
+                        .replace("(", "")
+                        .replace(")", ""));
+
+
+        }
+
+        List<WebElement> items = driver.findElements(By.cssSelector("[widget=\"ProductBlock\"]"));
+        int bendras = 0;
+        int counter = 0;
+        for (WebElement elementas : items) {
+            bendras++;
+            try {
+
+                elementas.findElement(By.cssSelector("[data-content=\"Prekė išparduota\"]"));
+                System.out.println("Prekė išparduota");
+
+            } catch (Exception e) {
+                counter++;
+            }
+
+        }
+        System.out.println("Puslapyje skelbimų yra: " + counter);
+        return new int[]{bendras, counter};
+    }
+
+    public static void cookies(){
+        driver.get("https://pigu.lt/");
+
+        wait.until(
+                ExpectedConditions.elementToBeClickable(
+                        By.cssSelector(".c-cookies__action button:first-child")
+                )
+        );
+
+        driver.findElement(By.cssSelector(".c-cookies__action button:first-child")).click();
+    }
+    public static void setup() {
+        driver = new ChromeDriver();
+        driver.manage().window().maximize();
+        wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+    }
+    public static void timeout(int time) {
+        try {
+            Thread.sleep(time); //1s = 1000
+        } catch (Exception e) {
+        }
+    }
+}
