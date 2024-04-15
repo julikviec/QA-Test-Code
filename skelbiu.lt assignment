@@ -1,0 +1,81 @@
+package org.example;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+
+public class Main {
+
+    public static WebDriver driver;
+    public static WebDriverWait wait;
+    private static JavascriptExecutor js;
+
+    public static void main(String[] args) {
+
+
+        driver = new ChromeDriver();
+        driver.manage().window().maximize();
+        wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+        skelbiuTestas();
+
+        skelbiuVeiksmai("Labas");
+
+    }
+
+    public static void skelbiuTestas() {
+        driver.get("https://www.skelbiu.lt");
+        wait.until(
+                ExpectedConditions.elementToBeClickable(
+                        By.id("onetrust-accept-btn-handler")
+                )
+        );
+
+        driver.findElement(By.id("onetrust-accept-btn-handler")).click();
+    }
+
+    public static void skelbiuVeiksmai(String frazes) {
+        timeout(2000);
+        JavascriptExecutor js = (JavascriptExecutor) driver;
+        driver.findElement(By.id("searchKeyword")).clear();
+        driver.findElement(By.id("searchKeyword")).sendKeys(frazes);
+        timeout(3000);
+        driver.findElement((By.id("selectboxCategory"))).click();
+//
+        timeout(3000);
+        driver.findElement(By.cssSelector("[data-category=\"1\"]")).click();
+        int[] ids = {1, 2, 3, 4, 5, 6, 7, 8, 4353, 4354, 36069};
+        for (int i = 0; i < ids.length; i++) {
+            try {
+                driver.findElement(By.cssSelector(".adult-container"));
+                driver.findElement(By.id("i-am-adult")).click();
+                driver.findElement(By.id("selectboxCategory")).click();
+                driver.findElement(By.cssSelector("[data-category=\"" + ids[i] + "\"]")).click();
+            } catch (Exception e) {
+
+                driver.findElement(By.id("selectboxCategory")).click();
+                driver.findElement(By.cssSelector("[data-category=\"" + ids[i] + "\"]")).click();
+            }
+        }
+        js.executeScript("window.scrollBy(0, 500)");
+        driver.findElement(By.cssSelector("#NotFoundBackLink a")).click();
+
+
+    }
+    public static void timeout ( int time){
+        try {
+            Thread.sleep(time);
+        } catch (Exception e) {
+        }
+    }
+}
+
