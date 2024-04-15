@@ -1,0 +1,60 @@
+package org.example;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.time.Duration;
+
+//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
+// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
+public class Main {
+    public static WebDriver driver;
+    public static WebDriverWait wait;
+
+    public static void main(String[] args) {
+        setup();
+        registration("Julija");
+    }
+
+    public static void setup() {
+        driver = new ChromeDriver();
+        driver.manage().window().maximize();
+        wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+    }
+
+    public static void registration(String name ) {
+        String [] message = {"Hi, can you call me? Thank you"};
+        JavascriptExecutor js = (JavascriptExecutor) driver;
+        driver.get("https://www.linestoshapes.lt/");
+        timeout(2000);
+
+        WebElement forma = driver.findElement(By.id("comp-ldrueo68"));
+        wait.until(
+                ExpectedConditions.elementToBeClickable(
+                        By.id("comp-ldrueo68")
+                )
+        );
+        js.executeScript("arguments[0].scrollIntoView();", forma);
+        timeout(3000);
+        driver.findElement(By.id("input_comp-ldrueo6n")).sendKeys(name);
+        driver.findElement(By.id("input_comp-ldrueo78")).sendKeys("invalid");
+        driver.findElement(By.id("textarea_comp-ldrueo7c")).sendKeys(message);
+        timeout(2000);
+        driver.findElement(By.id("comp-ldrueo7t1")).click();
+        driver.close();
+
+
+    }
+    public static void timeout ( int time){
+        try {
+            Thread.sleep(time);
+        } catch (Exception e) {
+        }
+    }
+}
+//automated test - ideti i krepseli ir issischekinti
