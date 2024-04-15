@@ -1,0 +1,95 @@
+package org.example;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.time.Duration;
+
+
+public class Main {
+    public static WebDriver driver;
+    public static WebDriverWait wait;
+    public static JavascriptExecutor js;
+
+
+    public static void main(String[] args) {
+        setup();
+        cookies();
+        elenta();
+        registration("Software", "Abc123","diboh69808@kravify.com" );
+        login("Software", "Abc123");
+
+
+    }
+
+    public static void elenta() {
+        String[] frazes = {"Automobilis", "Parduotuvė", "Šaltibarščiai", "Mergina", "Pervežimas"};
+
+
+//        Pirma užduotis. A)
+        WebElement search = driver.findElement(By.id("search-page-box"));
+        search.sendKeys("");
+        driver.findElement(By.cssSelector(".search-button")).click();
+//        Pirma užduotis. B)
+
+        for (int i = 0; i < frazes.length; i++) {
+            timeout(2000);
+            driver.findElement(By.id("search-page-box")).sendKeys(frazes[i]);
+            driver.findElement(By.id("search-box-table-button-cell")).click();
+            driver.findElement(By.id("search-page-box")).clear();
+
+        }
+        driver.close();
+//
+
+
+    }
+    public static void registration (String username, String password, String email){
+
+
+    driver.findElement(By.cssSelector(".button:last-child")).click();
+    driver.findElement(By.xpath("//*[@id=\"form\"]/fieldset/table/tbody/tr[10]/td/p/a")).click();
+    driver.findElement(By.id("UserName")).sendKeys(username);
+    driver.findElement(By.id("Email")).sendKeys(email);
+    driver.findElement(By.id("Password")).sendKeys(password);
+    driver.findElement(By.id("Password2")).sendKeys(password);
+    timeout(2000);
+    driver.findElement(By.xpath("//*[@id=\"main-container\"]/form/fieldset/table/tbody/tr[11]/td[2]/input")).click();
+    timeout(3000);
+    driver.close();
+    }
+    public static void login (String username, String password){
+
+
+    driver.findElement(By.cssSelector(".button:last-child")).click();
+    driver.findElement(By.id("UserName")).sendKeys(username);
+    driver.findElement(By.id("Password")).sendKeys(password);
+    driver.findElement(By.xpath("//*[@id=\"form\"]/fieldset/table/tbody/tr[4]/td[2]/input")).click();
+    timeout(3000);
+    driver.close();
+    }
+
+    public static void cookies() {
+        driver.get("https://elenta.lt/");
+        driver.findElement(By.cssSelector(".fc-button-label")).click();
+
+    }
+
+    public static void setup() {
+        driver = new ChromeDriver();
+        driver.manage().window().maximize();
+        wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+        js = (JavascriptExecutor) driver;
+    }
+
+    public static void timeout(int time) {
+        try {
+            Thread.sleep(time);
+        } catch (Exception e) {
+        }
+    }
+}
